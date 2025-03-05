@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         Free ECUST Chatbot
 // @namespace    https://ecust.edu.cn/
-// @version      0.1.3
+// @version      0.1.4
 // @description  Free and unrestricted ECUST chatbot
 // @author       Oborozuki
 // @match        *://ai.s.ecust.edu.cn/chatbot/*
+// @match        *://ai.s.ecust.edu.cn/academic-qa/*
 // @run-at       document-start
 // @grant        unsafeWindow
 // ==/UserScript==
@@ -17,11 +18,11 @@ const deleteSystemPrompt = true;
     const originFetch = fetch;
 
     window.unsafeWindow.fetch = async (url, options) => {
-        if (url.includes("/chatbot/api/tokenizer") || url.includes("/chatbot/api/paycenter/token/consume")) {
+        if (url.includes("/chatbot/api/tokenizer") || url.includes("/chatbot/api/paycenter/token/consume") || url.includes("/academic-qa/api/tokenizer") || url.includes("/academic-qa/api/paycenter/token/consume")) {
             return null;
         }
 
-        if (url.includes("/chatbot/api/chat/") && options?.body) {
+        if ((url.includes("/chatbot/api/chat/") || url.includes("/academic-qa/api/chat/ecust")) && options?.body) {
             const body = JSON.parse(options.body);
             body.chatSettings.temperature = modelTemperature;
 
@@ -39,11 +40,11 @@ const deleteSystemPrompt = true;
         }
 
         return originFetch(url, options).then(async (response) => {
-            if (url.includes("/chatbot/api/text/check")) {
+            if (url.includes("/chatbot/api/text/check") || url.includes("/academic-qa/api/text/check")) {
                 const res = await response.clone().json();
                 res.data.forEach(d => { d.code = 1; });
                 return new Response(JSON.stringify(res), response);
-            } else if (url.includes("/chatbot/api/paycenter/token/check")) {
+            } else if (url.includes("/chatbot/api/paycenter/token/check") || url.includes("/academic-qa/api/paycenter/token/check")) {
                 const res = await response.clone().json();
                 res.unUsedToken = 9999999999;
                 return new Response(JSON.stringify(res), response);
