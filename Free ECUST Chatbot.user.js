@@ -10,7 +10,7 @@
 // @grant        unsafeWindow
 // ==/UserScript==
 
-const modelTemperature = 0.8;
+const modelTemperature = 0.5;
 const useGPT4oMini = true;
 const deleteSystemPrompt = true;
 
@@ -43,10 +43,6 @@ const deleteSystemPrompt = true;
             if (url.includes("/chatbot/api/text/check") || url.includes("/academic-qa/api/text/check")) {
                 const res = await response.clone().json();
                 res.data.forEach(d => { d.code = 1; });
-                return new Response(JSON.stringify(res), response);
-            } else if (url.includes("/chatbot/api/paycenter/token/check") || url.includes("/academic-qa/api/paycenter/token/check")) {
-                const res = await response.clone().json();
-                res.unUsedToken = 9999999999;
                 return new Response(JSON.stringify(res), response);
             }
             return response;
