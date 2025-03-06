@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Free ECUST Chatbot
 // @namespace    https://ecust.edu.cn/
-// @version      0.1.4
+// @version      0.1.5
 // @description  Free and unrestricted ECUST chatbot
 // @author       Oborozuki
 // @match        *://ai.s.ecust.edu.cn/chatbot/*
@@ -32,7 +32,7 @@ const deleteSystemPrompt = true;
 
             if (body.messages?.length) {
                 const firstMessage = body.messages[0];
-                if (deleteSystemPrompt && firstMessage.role === "system" && firstMessage.content.startsWith("你是华东理工大学智能学术问答助手")) {
+                if (deleteSystemPrompt && firstMessage.role === "system") {
                     body.messages.shift();
                 }
             }
